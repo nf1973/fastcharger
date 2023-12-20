@@ -5,6 +5,11 @@ import ChargerCard from "@/components/ChargerCard";
 import { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import Spinner from "@/components/Spinner";
+//import Map from "@/components/Map";
+import dynamic from "next/dynamic";
+const Map = dynamic(() => import("@/components/Map"), {
+  loading: () => <p>Loading...</p>,
+});
 
 export default function Home() {
   const [chargers, setChargers] = useState([]);
@@ -37,7 +42,11 @@ export default function Home() {
       <main className="flex flex-col">
         <section className="map">
           <div className="w-full h-3/4 min-h-[400px] bg-indigo-300 flex items-center justify-center font-mono text-sm">
-            <p>Map cannot be loaded at this time</p>
+            {loading ? (
+              <p>Loading user location...</p>
+            ) : (
+              <Map userLocation={userLocation} chargers={chargers} />
+            )}
           </div>
         </section>
         <section className="list">
