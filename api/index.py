@@ -1,5 +1,4 @@
 from flask import Flask, request
-from get_chargers_list import get_nearest_chargers
 import requests
 import os
 from dotenv import load_dotenv
