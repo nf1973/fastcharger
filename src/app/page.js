@@ -57,7 +57,11 @@ export default function Home() {
             ) : (
               // Show ChargerCard components once chargers are available
               chargers.map((charger) => (
-                <ChargerCard key={charger.id} charger={charger} />
+                <ChargerCard
+                  key={charger.id}
+                  chargerid={charger.ChargerID}
+                  charger={charger}
+                />
               ))
             )}
           </div>

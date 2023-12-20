@@ -8,12 +8,20 @@ const Map = ({ userLocation, chargers }) => {
     ? [userLocation.latitude, userLocation.longitude]
     : [0, 0]; // Default position if userLocation is not available
 
+  // Define a custom icon for numbered markers
+  const numberedIcon = (number) =>
+    new L.DivIcon({
+      className: "custom-marker",
+      iconSize: [36, 36],
+      html: `<div style="color: yellow; background-color: blue; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 6px; font-weight: bold; border: 2px solid red;">${number}</div>`,
+    });
+
   return (
     <MapContainer
       center={position}
-      zoom={16}
+      zoom={14}
       style={{ height: "500px", width: "100%" }}
-      scrollWheelZoom={false}
+      scrollWheelZoom={true}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -26,12 +34,16 @@ const Map = ({ userLocation, chargers }) => {
       )}
 
       {chargers &&
-        chargers.map((charger) => {
+        chargers.map((charger, index) => {
           const chargerPosition = [charger.Latitude, charger.Longitude];
 
           return (
-            <Marker key={charger.id} position={chargerPosition}>
-              <Popup>{charger.name}</Popup>
+            <Marker
+              key={charger.id}
+              position={chargerPosition}
+              icon={numberedIcon(index + 1)}
+            >
+              <Popup>{charger.Opertator}</Popup>
             </Marker>
           );
         })}

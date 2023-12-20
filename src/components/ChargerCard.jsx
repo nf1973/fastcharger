@@ -12,7 +12,7 @@ const openAppleMaps = (latitude, longitude) => {
   window.open(url, "_blank");
 };
 
-const ChargerCard = ({ charger }) => {
+const ChargerCard = ({ chargerid, charger }) => {
   const handleGoogleMapsClick = () => {
     openGoogleMaps(charger.Latitude, charger.Longitude);
   };
@@ -21,13 +21,18 @@ const ChargerCard = ({ charger }) => {
     openAppleMaps(charger.Latitude, charger.Longitude);
   };
 
+  console.log(chargerid);
+
   return (
     <div className="  bg-slate-100 shadow-md rounded-lg m-2 flex">
       <div className="p-4">
         <h5 className="mb-2 text-xl font-medium>">
-          <p className="text-neutral-200 text-right bg-neutral-400 p-2 rounded">
-            {charger.Operator}
-          </p>
+          <div className="flex justify-between text-neutral-200 text-right bg-neutral-400 p-2 rounded">
+            <p className="text-yellow-300 bg-blue-800 border-red-600 p-2 rounded-full">
+              {chargerid + 1}
+            </p>
+            <p>{charger.Operator}</p>
+          </div>
         </h5>
         <div key={charger.Title} className="p-4">
           <h2 className="text-xl text-neutral-600 font-semibold mb-2">

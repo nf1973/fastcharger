@@ -72,14 +72,17 @@ def filter_only_fast(chargers):
 
 def get_nearest_chargers(start_lat, start_lon, distance_miles):
 
-    max_chargers = 3
+    
     
     chargers = get_chargers_list(start_lat, start_lon, distance_miles)
     fast_chargers=filter_only_fast(chargers)
     
     start = {'lat': str(start_lat), 'lon': str(start_lon)}
     destinations = []
-    print(f"Returning chargers for {start}")
+    print(f"Got {len(chargers)} chargers for {start}")
+
+    max_chargers = 10 if len(chargers) > 9 else len(chargers)
+    print(f"max_chargers={max_chargers}")
 
     for i, c in enumerate(chargers):
         dest_lat = c['AddressInfo']['Latitude']
@@ -88,23 +91,43 @@ def get_nearest_chargers(start_lat, start_lon, distance_miles):
         dest = {'lat': str(dest_lat), 'lon': str(dest_lon)}
         driving_distance = get_distances({'start': start, 'destination': dest})
       
-        charging_station_info = {
-                'Operator': c['OperatorInfo']['Title'],
-                'Title': c['AddressInfo']['Title'],
-                'AddressLine1': c['AddressInfo']['AddressLine1'],
-                'Town': c['AddressInfo']['Town'],
-                'Postcode': c['AddressInfo']['Postcode'],
-                'Distance': f"{c['AddressInfo']['Distance']}",
-                'Driving Distance': f"{driving_distance}",
-                'NumberOfChargePoints': c['NumberOfPoints'],
-                'UsageType': c['UsageType']['Title'],
-                'AccessComments': c['AddressInfo']['AccessComments'],
-                'DateLastVerified': c['DateLastVerified'],
-                'Credit': c['DataProvider']['Title'],
-                'Latitude': c['AddressInfo']['Latitude'],
-                'Longitude': c['AddressInfo']['Longitude'],
+        # charging_station_info = {
+        #         'ChargerID':i,
+        #         'Operator': c['OperatorInfo']['Title'],
+        #         'Title': c['AddressInfo']['Title'],
+        #         'AddressLine1': c['AddressInfo']['AddressLine1'],
+        #         'Town': c['AddressInfo']['Town'],
+        #         'Postcode': c['AddressInfo']['Postcode'],
+        #         'Distance': f"{c['AddressInfo']['Distance']}",
+        #         'Driving Distance': f"{driving_distance}",
+        #         'NumberOfChargePoints': c['NumberOfPoints'],
+        #         'UsageType': c['UsageType']['Title'],
+        #         'AccessComments': c['AddressInfo']['AccessComments'],
+        #         'DateLastVerified': c['DateLastVerified'],
+        #         'Credit': c['DataProvider']['Title'],
+        #         'Latitude': c['AddressInfo']['Latitude'],
+        #         'Longitude': c['AddressInfo']['Longitude'],
 
-            }
+        #     }
+
+        charging_station_info = {
+            'ChargerID': i,
+            'Operator': c['OperatorInfo']['Title'] if 'OperatorInfo' in c and 'Title' in c['OperatorInfo'] else None,
+            'Title': c['AddressInfo']['Title'] if 'AddressInfo' in c and 'Title' in c['AddressInfo'] else None,
+            'AddressLine1': c['AddressInfo']['AddressLine1'] if 'AddressInfo' in c and 'AddressLine1' in c['AddressInfo'] else None,
+            'Town': c['AddressInfo']['Town'] if 'AddressInfo' in c and 'Town' in c['AddressInfo'] else None,
+            'Postcode': c['AddressInfo']['Postcode'] if 'AddressInfo' in c and 'Postcode' in c['AddressInfo'] else None,
+            'Distance': f"{c['AddressInfo']['Distance']}" if 'AddressInfo' in c and 'Distance' in c['AddressInfo'] else None,
+            'Driving Distance': f"{driving_distance}",
+            'NumberOfChargePoints': c['NumberOfPoints'] if 'NumberOfPoints' in c else None,
+            'UsageType': c['UsageType']['Title'] if c.get('UsageType') and 'Title' in c['UsageType'] else None,
+            'AccessComments': c['AddressInfo']['AccessComments'] if 'AddressInfo' in c and 'AccessComments' in c['AddressInfo'] else None,
+            'DateLastVerified': c['DateLastVerified'] if 'DateLastVerified' in c else None,
+            'Credit': c['DataProvider']['Title'] if 'DataProvider' in c and 'Title' in c['DataProvider'] else None,
+            'Latitude': c['AddressInfo']['Latitude'] if 'AddressInfo' in c and 'Latitude' in c['AddressInfo'] else None,
+            'Longitude': c['AddressInfo']['Longitude'] if 'AddressInfo' in c and 'Longitude' in c['AddressInfo'] else None,
+        }
+
     
         destinations.append(charging_station_info)
 
