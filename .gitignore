@@ -3,6 +3,9 @@
 #env files
 .env
 
+#pycache
+__pycache__/
+
 # dependencies
 /node_modules
 /.pnp
