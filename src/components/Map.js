@@ -19,7 +19,7 @@ const Map = ({ userLocation, chargers }) => {
   return (
     <MapContainer
       center={position}
-      zoom={14}
+      zoom={12}
       style={{ height: "500px", width: "100%" }}
       scrollWheelZoom={true}
     >
