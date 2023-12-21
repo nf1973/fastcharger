@@ -43,7 +43,8 @@ def get_chargers_list(lat, lon, distance_km):
         print("Error: OPENCHARGEMAP KEY is missing.")
         return
     
-    url = f"https://api.openchargemap.io/v3/poi/?output=json&latitude={lat}&longitude={lon}&distance={distance_km}&distanceunit=KM&CurrentTypeID=30&sort=distance&key={key}"
+    url = f"https://api.openchargemap.io/v3/poi/?output=json&latitude={lat}&longitude={lon}&distance={distance_km}&distanceunit=KM&maxresults=300&sort=distance&key={key}"
+    print(url)
     headers = {'User-Agent': 'ChargeHere/1.0'}
 
     try:
@@ -64,76 +65,62 @@ def get_chargers_list(lat, lon, distance_km):
         print(f"Error: Open Charge Map API request failed: {e}")
         return
 
-def filter_only_fast(chargers):
-    #TODO: Move to a separate File
-    #TODO: Loop through all chargers, return only chargers that have one connection with 'PowerKM' <= 50
-    #TODO: Ideally, also include a count of how many connections with 'PowerKM' <= 50
-    return chargers
-
 def get_nearest_chargers(start_lat, start_lon, distance_miles):
 
-    
-    
     chargers = get_chargers_list(start_lat, start_lon, distance_miles)
-    fast_chargers=filter_only_fast(chargers)
     
     start = {'lat': str(start_lat), 'lon': str(start_lon)}
     destinations = []
-    print(f"Got {len(chargers)} chargers for {start}")
 
-    max_chargers = 10 if len(chargers) > 9 else len(chargers)
-    print(f"max_chargers={max_chargers}")
+    #max_chargers = 40 if len(chargers) > 40 else len(chargers)
 
+    charger_id = 0
     for i, c in enumerate(chargers):
-        dest_lat = c['AddressInfo']['Latitude']
-        dest_lon = c['AddressInfo']['Longitude']
+        
+        # Check if this charger has Fast Chargers and skip if not
+        has_fast_chargers = False
+        for j, connection in enumerate(c['Connections']):
+            try:
+                power_kw = connection.get('PowerKW')
+                if power_kw is not None and int(power_kw) > 49:
+                    has_fast_chargers = True
+            except (ValueError, TypeError):
+                # Handle the case where 'PowerKW' value is not a valid integer or is None
+                print(f"Warning: 'PowerKW' is not a valid integer in connection {j + 1}. Skipping...")
 
-        dest = {'lat': str(dest_lat), 'lon': str(dest_lon)}
-        driving_distance = get_distances({'start': start, 'destination': dest})
-      
-        # charging_station_info = {
-        #         'ChargerID':i,
-        #         'Operator': c['OperatorInfo']['Title'],
-        #         'Title': c['AddressInfo']['Title'],
-        #         'AddressLine1': c['AddressInfo']['AddressLine1'],
-        #         'Town': c['AddressInfo']['Town'],
-        #         'Postcode': c['AddressInfo']['Postcode'],
-        #         'Distance': f"{c['AddressInfo']['Distance']}",
-        #         'Driving Distance': f"{driving_distance}",
-        #         'NumberOfChargePoints': c['NumberOfPoints'],
-        #         'UsageType': c['UsageType']['Title'],
-        #         'AccessComments': c['AddressInfo']['AccessComments'],
-        #         'DateLastVerified': c['DateLastVerified'],
-        #         'Credit': c['DataProvider']['Title'],
-        #         'Latitude': c['AddressInfo']['Latitude'],
-        #         'Longitude': c['AddressInfo']['Longitude'],
+        if has_fast_chargers:
+            
+            dest_lat = c['AddressInfo']['Latitude']
+            dest_lon = c['AddressInfo']['Longitude']
 
-        #     }
+            dest = {'lat': str(dest_lat), 'lon': str(dest_lon)}
+            #driving_distance = get_distances({'start': start, 'destination': dest})
+            driving_distance = "Not available"
 
-        charging_station_info = {
-            'ChargerID': i,
-            'Operator': c['OperatorInfo']['Title'] if 'OperatorInfo' in c and 'Title' in c['OperatorInfo'] else None,
-            'Title': c['AddressInfo']['Title'] if 'AddressInfo' in c and 'Title' in c['AddressInfo'] else None,
-            'AddressLine1': c['AddressInfo']['AddressLine1'] if 'AddressInfo' in c and 'AddressLine1' in c['AddressInfo'] else None,
-            'Town': c['AddressInfo']['Town'] if 'AddressInfo' in c and 'Town' in c['AddressInfo'] else None,
-            'Postcode': c['AddressInfo']['Postcode'] if 'AddressInfo' in c and 'Postcode' in c['AddressInfo'] else None,
-            'Distance': f"{c['AddressInfo']['Distance']}" if 'AddressInfo' in c and 'Distance' in c['AddressInfo'] else None,
-            'Driving Distance': f"{driving_distance}",
-            'NumberOfChargePoints': c['NumberOfPoints'] if 'NumberOfPoints' in c else None,
-            'UsageType': c['UsageType']['Title'] if c.get('UsageType') and 'Title' in c['UsageType'] else None,
-            'AccessComments': c['AddressInfo']['AccessComments'] if 'AddressInfo' in c and 'AccessComments' in c['AddressInfo'] else None,
-            'DateLastVerified': c['DateLastVerified'] if 'DateLastVerified' in c else None,
-            'Credit': c['DataProvider']['Title'] if 'DataProvider' in c and 'Title' in c['DataProvider'] else None,
-            'Latitude': c['AddressInfo']['Latitude'] if 'AddressInfo' in c and 'Latitude' in c['AddressInfo'] else None,
-            'Longitude': c['AddressInfo']['Longitude'] if 'AddressInfo' in c and 'Longitude' in c['AddressInfo'] else None,
-        }
+            charging_station_info = {
+                'ChargerID': charger_id,
+                'Operator': c['OperatorInfo'].get('Title') if c.get('OperatorInfo') else None,
+                'Title': c['AddressInfo'].get('Title') if c.get('AddressInfo') else None,
+                'AddressLine1': c['AddressInfo'].get('AddressLine1') if c.get('AddressInfo') else None,
+                'Town': c['AddressInfo'].get('Town') if c.get('AddressInfo') else None,
+                'Postcode': c['AddressInfo'].get('Postcode') if c.get('AddressInfo') else None,
+                'Distance': f"{c['AddressInfo'].get('Distance')}" if c.get('AddressInfo') else None,
+                'Driving Distance': f"{driving_distance}",
+                'NumberOfChargePoints': c.get('NumberOfPoints'),
+                'UsageType': c.get('UsageType', {}).get('Title') if c.get('UsageType') else None,
+                'AccessComments': c['AddressInfo'].get('AccessComments') if c.get('AddressInfo') else None,
+                'DateLastVerified': c.get('DateLastVerified'),
+                'Credit': c['DataProvider'].get('Title') if c.get('DataProvider') else None,
+                'Latitude': c['AddressInfo'].get('Latitude') if c.get('AddressInfo') else None,
+                'Longitude': c['AddressInfo'].get('Longitude') if c.get('AddressInfo') else None,
+            }
 
-    
-        destinations.append(charging_station_info)
+            destinations.append(charging_station_info)
+            charger_id = charger_id +1
 
-        # Check if max_chargers have already been added
-        if i + 1 == max_chargers:
-            break
+            # Check if max_chargers have already been added
+            # if i + 1 == max_chargers:
+            #     break
 
     return destinations
     
@@ -146,7 +133,7 @@ def get_chargers_here():
     # Get latitude, longitude, and distance from query parameters or use defaults
     latitude = request.args.get('lat', "51.0955")
     longitude = request.args.get('lon', "1.1235")
-    distance = request.args.get('distance', "60")
+    distance = request.args.get('distance', "150")
 
     return get_nearest_chargers(latitude, longitude, distance)
 

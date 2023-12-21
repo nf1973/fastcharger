@@ -21,8 +21,6 @@ const ChargerCard = ({ chargerid, charger }) => {
     openAppleMaps(charger.Latitude, charger.Longitude);
   };
 
-  console.log(chargerid);
-
   return (
     <div className="  bg-slate-100 shadow-md rounded-lg m-2 flex">
       <div className="p-4">
@@ -43,33 +41,24 @@ const ChargerCard = ({ chargerid, charger }) => {
             {charger.Title}
           </h2>
           <p className="text-neutral-600">
-            <span className="text-neutral-500 font-bold">
-              Number of Charge Points:
-            </span>{" "}
-            {charger.NumberOfChargePoints}
+            {charger.NumberOfChargePoints === null
+              ? "Unknown number of"
+              : charger.NumberOfChargePoints}
+            <span>&nbsp;charge points</span>
           </p>
-          <p className="text-neutral-600">
-            <span className="text-neutral-500 font-bold">Address:</span>{" "}
-            {charger.AddressLine1}
-          </p>
-          <p className="text-neutral-600">
-            <span className="text-neutral-500 font-bold">Town:</span>{" "}
-            {charger.Town}
-          </p>
-          <p className="text-neutral-600">
-            <span className="text-neutral-500 font-bold">Postcode:</span>{" "}
-            {charger.Postcode}
-          </p>
+          <p className="text-neutral-600 mt-4">{charger.AddressLine1}</p>
+          <p className="text-neutral-600">{charger.Town}</p>
+          <p className="text-neutral-600">{charger.Postcode}</p>
           <p className="text-neutral-600 mt-5">
             <span className="text-neutral-500 font-bold">Distance:</span>{" "}
             {Math.round(parseFloat(charger.Distance))} km
           </p>
-          <p className="text-neutral-600">
+          {/* <p className="text-neutral-600">
             <span className="text-neutral-500 font-bold">
               Driving Distance:
             </span>{" "}
             {Math.round(parseFloat(charger["Driving Distance"]))} km
-          </p>
+          </p> */}
         </div>
 
         <div className="flex gap-5">
@@ -100,17 +89,3 @@ const ChargerCard = ({ chargerid, charger }) => {
 };
 
 export default ChargerCard;
-
-// "AccessComments": "24/7 nutzbar",
-// "AddressLine1": "Station Road 99",
-// "Credit": "Open Charge Map Contributors",
-// "DateLastVerified": "2023-12-19T14:55:00Z",
-// "Distance": "0.8189374908335816",
-// "Driving Distance": "1.5675999999999999",
-// "Latitude": 99.8776271,
-// "Longitude": 99.8776271,
-// "NumberOfChargePoints": 1,
-// "Operator": "(Business Owner at Location)",
-// "Title": "Zahnarztpraxis Dr. Tooth & Gums",
-// "Town": "Townville",
-// "UsageType": "Public - Membership Required"
