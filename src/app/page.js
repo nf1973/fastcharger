@@ -41,7 +41,7 @@ export default function Home() {
       <Header />
       <main className="flex flex-col">
         <section className="map">
-          <div className="w-full h-3/4 min-h-[400px] bg-indigo-300 flex items-center justify-center font-mono text-sm">
+          <div className="w-full h-3/4 min-h-[400px] bg-slate-300 flex items-center justify-center font-mono text-sm">
             {loading ? (
               <p>Loading user location...</p>
             ) : (

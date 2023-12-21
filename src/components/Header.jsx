@@ -11,7 +11,7 @@ function Header() {
           </h1>
         </Link>
 
-        <div className="flex gap-5 text-right items-end text-2xl">
+        <div className="flex gap-5 text-right items-end text-2xl text-slate-200">
           <Link href={"https://github.com/nf1973/fastcharger"} target="_blank">
             <p>
               <IoLogoGithub />

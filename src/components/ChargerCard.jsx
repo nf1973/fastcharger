@@ -27,11 +27,15 @@ const ChargerCard = ({ chargerid, charger }) => {
     <div className="  bg-slate-100 shadow-md rounded-lg m-2 flex">
       <div className="p-4">
         <h5 className="mb-2 text-xl font-medium>">
-          <div className="flex justify-between text-neutral-200 text-right bg-neutral-400 p-2 rounded">
-            <p className="text-yellow-300 bg-blue-800 border-red-600 p-2 rounded-full">
+          <div className="flex justify-between text-neutral-200 text-right bg-slate-400 p-2 rounded">
+            <p className="text-white bg-blue-400 border-white border-solid border-2 rounded-full items-center pr-2 justify-center h-8 w-8 font-bold">
               {chargerid + 1}
             </p>
-            <p>{charger.Operator}</p>
+            <p className="text-white">
+              {charger.Operator === "(Business Owner at Location)"
+                ? "Unknown Operator"
+                : charger.Operator}
+            </p>
           </div>
         </h5>
         <div key={charger.Title} className="p-4">
@@ -72,21 +76,21 @@ const ChargerCard = ({ chargerid, charger }) => {
           <button
             type="button"
             onClick={handleGoogleMapsClick}
-            className="rounded bg-slate-300 px-6 py-3"
+            className="rounded bg-blue-400 px-6 py-3"
           >
             <div className="flex">
-              <GrGoogle className="me-3" />
-              <p className="text-xs">Send to Google Maps</p>
+              <GrGoogle className="mt-1 me-3 text-white text-lg" />
+              <p className=" text-white">Send to Google Maps</p>
             </div>
           </button>
           <button
             type="button"
             onClick={handleAppleMapsClick}
-            className="rounded bg-slate-300 px-6 py-3"
+            className="rounded bg-blue-400 px-6 py-3"
           >
             <div className="flex">
-              <IoLogoApple className="me-3" />
-              <p className="text-xs">Send to Apple Maps</p>
+              <IoLogoApple className="mt-1 me-3 text-white text-lg" />
+              <p className="text-white">Send to Apple Maps</p>
             </div>
           </button>
         </div>

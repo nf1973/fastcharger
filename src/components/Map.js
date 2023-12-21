@@ -12,8 +12,8 @@ const Map = ({ userLocation, chargers }) => {
   const numberedIcon = (number) =>
     new L.DivIcon({
       className: "custom-marker",
-      iconSize: [36, 36],
-      html: `<div style="color: yellow; background-color: blue; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 6px; font-weight: bold; border: 2px solid red;">${number}</div>`,
+      iconSize: [32, 24],
+      html: `<div style="color: white; font-size: 1.2rem; background-color: #63b3ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; border: 2px solid white;">${number}</div>`,
     });
 
   return (
@@ -42,9 +42,7 @@ const Map = ({ userLocation, chargers }) => {
               key={charger.id}
               position={chargerPosition}
               icon={numberedIcon(index + 1)}
-            >
-              <Popup>{charger.Opertator}</Popup>
-            </Marker>
+            ></Marker>
           );
         })}
     </MapContainer>
